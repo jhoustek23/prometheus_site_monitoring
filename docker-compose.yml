@@ -1,0 +1,41 @@
+version: '3'
+
+services:
+
+    prometheus:
+        image: quay.io/prometheus/prometheus:v2.30.0
+        container_name: prometheus
+        privileged: true
+        volumes:
+            - ./prometheus/:/etc/prometheus/
+        command:
+            - '--config.file=/etc/prometheus/prometheus.yaml'
+        ports:
+            - '9090:9090'
+
+    node-exporter:
+        image: quay.io/prometheus/node-exporter:v1.2.2
+        container_name: node-exporter
+        ports:
+            - '9100:9100'
+
+    alertmanager:
+        image: quay.io/prometheus/alertmanager:v0.23.0
+        container_name: alertmanager
+        privileged: true
+        volumes:
+             - ./alertmanager/alertmanager.yml:/alertmanager.yml
+        command:
+            - '--config.file=/alertmanager.yml'
+        ports:
+            - '9093:9093'
+
+    blackbox-exporter:
+        image: quay.io/prometheus/blackbox-exporter:v0.19.0
+        container_name: blackbox-exporter
+        volumes:
+            - ./blackbox/blackbox.yml:/config/blackbox.yml
+        command:
+            - '--config.file=/config/blackbox.yml'
+        ports:
+            - '9115:9115'
